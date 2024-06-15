@@ -7,6 +7,21 @@ namespace GildedRose;
 final class GildedRose
 {
     /**
+     * @var int $minQuality
+     */
+    private $minQuality = 0;
+
+    /**
+     * @var int $maxQuality
+     */
+    private $maxQuality = 50;
+
+    /**
+     * @var int $noLimitSellIn
+     */
+    private $noLimitSellIn = -1;
+
+    /**
      * @param Item[] $items
      */
     public function __construct(
@@ -86,7 +101,7 @@ final class GildedRose
     private function setSellIn(Item &$item): void
     {
         if ($this->isSulfuras($item)) {
-            $item->sellIn = -1;
+            $item->sellIn = $this->noLimitSellIn;
 
             return;
         }
@@ -96,18 +111,20 @@ final class GildedRose
 
     /**
      * @param Item $item
+     * @param int $quality
+     * @param bool $exact
      * @return void
      */
     private function setQuality(Item &$item, int $quality = 0, bool $exact = false): void
     {
-        if ($quality < 0) {
-            $item->quality = 0;
+        if ($quality < $this->minQuality) {
+            $item->quality = $this->minQuality;
 
             return;
         }
 
-        if ($quality > 50 && $exact === false) {
-            $item->quality = 50;
+        if ($quality > $this->maxQuality && $exact === false) {
+            $item->quality = $this->maxQuality;
 
             return;
         }
